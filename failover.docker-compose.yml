@@ -1,0 +1,44 @@
+version: "3.5"
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.8.0
+    ports:
+    - "20003:20003"
+    - "20002:20002"
+    - "20001:20001"
+    - "20000:20000"
+    - "19999:19999"
+    volumes:
+    - ./config/envoy.failover.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+    - egoserver1
+    - egoserver2
+    - egoserver3
+  egoserver1:
+    build:
+      context: ./egoserver
+      dockerfile: ./Dockerfile
+    environment:
+      PORT: 3000
+      NAME: one
+    volumes:
+    - ./egoserver/server.js:/app/server.js
+  egoserver2:
+    build:
+      context: ./egoserver
+      dockerfile: ./Dockerfile
+    environment:
+      PORT: 3000
+      NAME: two
+    volumes:
+    - ./egoserver/server.js:/app/server.js
+  egoserver3:
+    build:
+      context: ./egoserver
+      dockerfile: ./Dockerfile
+    environment:
+      PORT: 3000
+      NAME: three
+      WAIT: 1000
+    volumes:
+    - ./egoserver/server.js:/app/server.js
