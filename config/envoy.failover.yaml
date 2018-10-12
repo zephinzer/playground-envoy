@@ -1,9 +1,13 @@
+# this configuration sets up three egoserver clusters for the
+# service_egoserver3 cluster, it is set to failover to egoserver 2
+# followed by 1
+
 admin:
   access_log_path: /tmp/admin_access.log
   address:
     socket_address:
       address: 0.0.0.0
-      port_value: 19999
+      port_value: 20000
 static_resources:
   clusters:
   - name: service_egoserver1
@@ -70,17 +74,6 @@ static_resources:
         max_pending_requests: 1
         max_requests: 1
         max_retries: 3
-  - name: service_google
-    connect_timeout: 1s
-    type: LOGICAL_DNS
-    dns_lookup_family: V4_ONLY
-    lb_policy: ROUND_ROBIN
-    hosts:
-    - socket_address:
-        address: google.com
-        port_value: 443
-    tls_context:
-      sni: www.google.com
   listeners:
   - name: egoserver1
     address:
@@ -148,28 +141,3 @@ static_resources:
                   prefix: "/"
                 route:
                   cluster: service_egoserver3
-  - name: google
-    address:
-      socket_address:
-        address: 0.0.0.0
-        port_value: 20000
-    filter_chains:
-    - filters:
-      - name: envoy.http_connection_manager
-        config:
-          codec_type: AUTO
-          stat_prefix: ingress_http
-          http_filters:
-          - name: envoy.router
-          route_config:
-            name: local_route
-            virtual_hosts:
-            - name: local_service
-              domains:
-              - "*"
-              routes:
-              - match:
-                  prefix: "/"
-                route:
-                  host_rewrite: www.google.com
-                  cluster: service_google
