@@ -6,3 +6,6 @@ failover:
 	@printf -- 'Open another terminal and shut down egoserver3:\n\n'
 	@printf -- '  docker-compose -f ./failover.docker-compose.yml stop egoserver3;\n\n'
 	@printf -- "- observe that the curl to localhost:20003 responds with \"Hello, I'm two\".\n\n"
+
+failover.stop:
+	docker-compose -f ./failover.docker-compose.yml down
