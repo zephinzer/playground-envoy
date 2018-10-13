@@ -1,6 +1,7 @@
 version: "3.5"
 services:
   envoy_basic_external:
+    container_name: envoy_svc_basic_external
     image: envoyproxy/envoy:v1.8.0
     ports:
     - "20000:20000" # admin interface port
@@ -8,6 +9,7 @@ services:
     volumes:
     - ./config/envoy.basic.external.yaml:/etc/envoy/envoy.yaml:ro
   envoy_basic_internal:
+    container_name: envoy_svc_basic_internal
     image: envoyproxy/envoy:v1.8.0
     ports:
     - "20000:20000" # admin interface port
@@ -17,6 +19,7 @@ services:
     depends_on:
     - egoserver
   envoy_failover:
+    container_name: envoy_svc_failover
     image: envoyproxy/envoy:v1.8.0
     ports:
     - "20000:20000" # admin interface port
@@ -29,6 +32,17 @@ services:
     - egoserver1
     - egoserver2
     - egoserver3
+  envoy_headers:
+    container_name: envoy_svc_headers
+    image: envoyproxy/envoy:v1.8.0
+    ports:
+    - "20000:20000" # admin interface port
+    - "20001:20001" # basic egoserver
+    - "20002:20002" # modified egoserver reuqest/responses
+    volumes:
+    - ./config/envoy.headers.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+    - egoserver
   egoserver:
     build:
       context: ./egoserver

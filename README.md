@@ -8,9 +8,16 @@ You will need `make`, `docker` and `docker-compose` to run examples in this proj
 The following examples have been completed and ready to use.
 
 - [Basic External](#basic-external)
+- [Basic Internal](#basic-internal)
 - [Endpoint Failover](#endpoint-failover)
+- [Headers Manipulation](#headers-manipulation)
 
 For all examples, run `make stop` to stop it before spinning up another example.
+
+Some administrative commands as follows:
+
+- `make admin.logs`: outputs the logs in follow mode of the currently running envoy service
+- `make admin.reload`: restarts the currently running envoy service to let updated configurations take effect (note that if you changed the volume path, this will not work, this works only for situations where you modified a configuration file's contents)
 
 ## Basic External
 This example demonstrates how to use Envoy as a proxy.
@@ -30,3 +37,8 @@ You should see a JSON response by the Egoserver.
 This example demonstrates the ability to specify a failover endpoint.
 
 To run this, use `make failover` and follow the console printed instructions.
+
+## Headers Manipulation
+This example demonstrates how to use Envoy to manipulate headers.
+
+To run this, use `make headers` and follow the console printed instructions.
