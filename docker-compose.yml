@@ -1,12 +1,21 @@
 version: "3.5"
 services:
-  envoy_basic:
+  envoy_basic_external:
     image: envoyproxy/envoy:v1.8.0
     ports:
     - "20000:20000" # admin interface port
     - "20001:20001" # cluster that proxies to google
     volumes:
-    - ./config/envoy.basic.yaml:/etc/envoy/envoy.yaml:ro
+    - ./config/envoy.basic.external.yaml:/etc/envoy/envoy.yaml:ro
+  envoy_basic_internal:
+    image: envoyproxy/envoy:v1.8.0
+    ports:
+    - "20000:20000" # admin interface port
+    - "20001:20001" # cluster that proxies to the egoserver
+    volumes:
+    - ./config/envoy.basic.internal.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+    - egoserver
   envoy_failover:
     image: envoyproxy/envoy:v1.8.0
     ports:
@@ -20,6 +29,15 @@ services:
     - egoserver1
     - egoserver2
     - egoserver3
+  egoserver:
+    build:
+      context: ./egoserver
+      dockerfile: ./Dockerfile
+    environment:
+      PORT: 3000
+      NAME: the only egoserver
+    volumes:
+    - ./egoserver/server.js:/app/server.js
   egoserver1:
     build:
       context: ./egoserver

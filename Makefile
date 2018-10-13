@@ -1,6 +1,10 @@
-basic:
-	docker-compose -f ./docker-compose.yml up -d -V --force-recreate envoy_basic
+basic.external:
+	docker-compose -f ./docker-compose.yml up -d -V --force-recreate envoy_basic_external
 	@printf -- 'Google should have become available at http://localhost:20001\n\n'
+
+basic.internal:
+	docker-compose -f ./docker-compose.yml up -d -V --force-recreate envoy_basic_internal
+	@printf -- 'Egoserver should have become available at http://localhost:20001\n\n'
 
 failover:
 	docker-compose -f ./docker-compose.yml up -d -V --force-recreate envoy_failover
